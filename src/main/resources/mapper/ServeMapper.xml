@@ -3,5 +3,27 @@
 <mapper namespace="com.jzo2o.foundations.mapper.ServeMapper">
 
 
-
+    <select id="queryByRegionId" resultType="com.jzo2o.foundations.model.dto.response.ServeResDTO">
+        select
+            serve.id,
+            serve.is_hot,
+            serve.price,
+            item.reference_price,
+            serve.region_id,
+            serve.sale_status,
+            serve.serve_item_id,
+            item.name serve_item_name,
+            item.serve_type_id,
+            type.name serve_type_name,
+            serve.create_time,
+            serve.update_time
+        from
+            serve
+        join
+            serve_item item on serve_item_id = item.id
+        join
+            serve_type type on item.serve_type_id = type.id
+        where
+            serve.region_id = #{regionId};
+    </select>
 </mapper>
