@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jzo2o.common.expcetions.ForbiddenOperationException;
 import com.jzo2o.common.model.PageResult;
 import com.jzo2o.foundations.constants.FoundationConstants;
+import com.jzo2o.foundations.constants.RedisConstants;
 import com.jzo2o.foundations.enums.FoundationStatusEnum;
 import com.jzo2o.foundations.model.domain.Region;
 import com.jzo2o.foundations.model.domain.Serve;
@@ -24,6 +25,9 @@ import com.jzo2o.foundations.service.IServeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jzo2o.mysql.utils.PageHelperUtils;
 import com.jzo2o.mysql.utils.PageUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +130,7 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CachePut(cacheNames = RedisConstants.CacheName.SERVE,key = "#id",cacheManager = RedisConstants.CacheManager.THIRTY_MINUTES)
     public void updateStatus(Long id,Short type) {
         //参数判空
         if(ObjectUtil.isEmpty(id)){
@@ -168,6 +173,7 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
     }
 
     @Override
+    @CacheEvict(cacheNames = RedisConstants.CacheName.SERVE,key = "#id")
     public void deleteServe(Long id) {
         //参数判空
         if(ObjectUtil.isEmpty(id)){
@@ -211,5 +217,9 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
         }
     }
 
-    
+    @Override
+    @Cacheable(cacheNames = RedisConstants.CacheName.SERVE,key = "#id",cacheManager = RedisConstants.CacheManager.THIRTY_MINUTES)
+    public Serve getServeById(Long id){
+        return this.getById(id);
+    }
 }

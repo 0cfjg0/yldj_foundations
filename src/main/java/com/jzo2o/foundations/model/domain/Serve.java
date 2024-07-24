@@ -1,9 +1,7 @@
 package com.jzo2o.foundations.model.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -19,6 +17,8 @@ import java.time.LocalDateTime;
  * @since 2023-07-03
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("serve")

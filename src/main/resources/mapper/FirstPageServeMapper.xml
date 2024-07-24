@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzo2o.foundations.mapper.FirstPageServeMapper">
+
+    <resultMap id="serveMap" type="com.jzo2o.foundations.model.dto.response.ServeCategoryResDTO">
+        <id column="serve_type_id" property="serveTypeId"></id>
+        <result column="city_code" property="cityCode"></result>
+        <result column="serve_type_name" property="serveTypeName"></result>
+        <result column="serve_type_icon" property="serveTypeIcon"></result>
+        <result column="serve_type_sort_num" property="serveTypeSortNum"></result>
+        <collection property="serveResDTOList" ofType="com.jzo2o.foundations.model.dto.response.ServeSimpleResDTO">
+            <result column="serve_item_sort_num" property="serveItemSortNum"></result>
+            <result column="serve_item_name" property="serveItemName"></result>
+            <result column="serve_item_id" property="serveItemId"></result>
+            <result column="serve_item_icon" property="serveItemIcon"></result>
+            <result column="id" property="id"></result>
+        </collection>
+    </resultMap>
+
+
+    <select id="getServeList" resultMap="serveMap"
+            parameterType="java.lang.Long">
+        select
+            st.id serve_type_id,
+            serve.city_code city_code,
+            st.serve_type_icon serve_type_icon,
+            st.sort_num serve_type_sort_num,
+            st.name serve_type_name,
+            si.sort_num serve_item_sort_num,
+            si.name serve_item_name,
+            si.id serve_item_id,
+            si.serve_item_icon serve_item_icon,
+            serve.id id
+        from serve
+                 inner join serve_item si
+                            on serve.serve_item_id = si.id
+                 inner join serve_type st
+                            on si.serve_type_id = st.id
+        where
+            si.active_status = 2
+          and
+            serve.sale_status = 2
+          and
+            serve.region_id = #{regionId};
+    </select>
+
+    <select id="getHotServe" resultType="com.jzo2o.foundations.model.dto.response.ServeAggregationSimpleResDTO"
+            parameterType="java.lang.Long">
+        select
+            serve.city_code city_code,
+            si.name         serve_item_name,
+            si.id           serve_item_id,
+            si.unit unit,
+            si.detail_img detailImg,
+            serve.price price,
+            si.img serve_item_img,
+            serve.id id
+        from serve
+                 inner join serve_item si
+                            on serve.serve_item_id = si.id
+        where serve.region_id = #{regionId}
+          and serve.is_hot = 1
+          and serve.sale_status = 2;
+    </select>
+</mapper>

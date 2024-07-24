@@ -137,6 +137,7 @@ public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> impleme
      * @return 区域列表
      */
     @Override
+    @Cacheable(cacheNames = RedisConstants.CacheName.JZ_CACHE,key = "'ACTIVE_REGIONS'",cacheManager = RedisConstants.CacheManager.FOREVER)
     public List<RegionSimpleResDTO> queryActiveRegionList() {
         LambdaQueryWrapper<Region> queryWrapper = Wrappers.<Region>lambdaQuery()
                 .eq(Region::getActiveStatus, FoundationStatusEnum.ENABLE.getStatus())
@@ -167,7 +168,7 @@ public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> impleme
             throw new ForbiddenOperationException("草稿或禁用状态方可启用");
         }
         //如果需要启用区域，需要校验该区域下是否有上架的服务
-        LambdaQueryWrapper<Serve> wrapper = Wrappers.<Serve>lambdaQuery().eq(Serve::getSaleStatus, FoundationStatusEnum.ENABLE);
+        LambdaQueryWrapper<Serve> wrapper = Wrappers.<Serve>lambdaQuery().eq(Serve::getSaleStatus, FoundationStatusEnum.ENABLE.getStatus());
         List<Serve> list = serveService.list(wrapper);
         if(CollUtil.isNotEmpty(list)){
             throw new ForbiddenOperationException("区域内仍存在上架服务");
@@ -206,7 +207,7 @@ public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> impleme
         }
 
         //1.如果禁用区域下有上架的服务则无法禁用
-        LambdaQueryWrapper<Serve> wrapper = Wrappers.<Serve>lambdaQuery().eq(Serve::getSaleStatus, FoundationStatusEnum.ENABLE);
+        LambdaQueryWrapper<Serve> wrapper = Wrappers.<Serve>lambdaQuery().eq(Serve::getSaleStatus, FoundationStatusEnum.ENABLE.getStatus());
         List<Serve> list = serveService.list(wrapper);
         if(CollUtil.isNotEmpty(list)){
             throw new ForbiddenOperationException("区域内仍存在上架服务");

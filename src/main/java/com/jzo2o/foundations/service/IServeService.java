@@ -32,4 +32,6 @@ public interface IServeService extends IService<Serve> {
     void deleteServe(Long id);
 
     void setHot(Long id,Integer isHot);
+
+    public Serve getServeById(Long id);
 }

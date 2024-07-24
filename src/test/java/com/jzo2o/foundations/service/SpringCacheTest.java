@@ -61,5 +61,4 @@ public class SpringCacheTest {
     public void deleteById(Long id){
         baseMapper.deleteById(id);
     }
-
 }

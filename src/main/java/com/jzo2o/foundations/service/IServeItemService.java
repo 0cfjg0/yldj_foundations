@@ -5,6 +5,7 @@ import com.jzo2o.api.foundations.dto.response.ServeItemResDTO;
 import com.jzo2o.api.foundations.dto.response.ServeItemSimpleResDTO;
 import com.jzo2o.api.foundations.dto.response.ServeTypeCategoryResDTO;
 import com.jzo2o.common.model.PageResult;
+import com.jzo2o.foundations.model.domain.Serve;
 import com.jzo2o.foundations.model.domain.ServeItem;
 import com.jzo2o.foundations.model.dto.request.ServeItemPageQueryReqDTO;
 import com.jzo2o.foundations.model.dto.request.ServeItemUpsertReqDTO;
@@ -97,4 +98,9 @@ public interface IServeItemService extends IService<ServeItem> {
      * @return 服务项目录
      */
     List<ServeTypeCategoryResDTO> queryActiveServeItemCategory();
+
+    /**
+     * 根据id缓存查询
+     */
+    ServeItem getServeItemById(Long id);
 }
